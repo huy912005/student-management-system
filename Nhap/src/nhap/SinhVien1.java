@@ -19,6 +19,11 @@ public class SinhVien1 extends Nguoi{
         super(ten, tuoi);
     }
 
+    public SinhVien1(double dtb, int id, String ten, int tuoi) {
+        super(id, ten, tuoi);
+        this.dtb = dtb;
+    }
+
     public SinhVien1(double dtb, String ten, int tuoi) {
         super(ten, tuoi);
         this.dtb = dtb;

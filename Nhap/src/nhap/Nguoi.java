@@ -9,12 +9,27 @@ package nhap;
  * @author ADMIN
  */
 public class Nguoi {
+    private int id;
     protected String ten;
     protected int tuoi;
 
     public Nguoi() {
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Nguoi(int id, String ten, int tuoi) {
+        this.id = id;
+        this.ten = ten;
+        this.tuoi = tuoi;
+    }
+    
     public Nguoi(String ten, int tuoi) {
         this.ten = ten;
         this.tuoi = tuoi;

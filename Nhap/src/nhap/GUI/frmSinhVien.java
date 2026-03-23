@@ -6,6 +6,7 @@ package nhap.GUI;
 
 import javax.swing.table.DefaultTableModel;
 import nhap.QuanLySinhVien;
+import nhap.Service.SinhVienService;
 import nhap.SinhVien1;
 
 /**
@@ -16,16 +17,18 @@ public class frmSinhVien extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frmSinhVien.class.getName());
     private static QuanLySinhVien ql = new QuanLySinhVien();
-
+    private static SinhVienService svs= new SinhVienService();
     /**
      * Creates new form frmSinhVien
      */
     public frmSinhVien() {
         initComponents();
+        setTxt();
         tblSinhVien.setModel(new DefaultTableModel(
                 new Object[][]{},
-                new String[]{"Tên","Tuổi","ĐTB"}
+                new String[]{"ID","Tên","Tuổi","ĐTB"}
         ));
+        loadTableDefault();
     }
 
     /**
@@ -49,6 +52,8 @@ public class frmSinhVien extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblSinhVien = new javax.swing.JTable();
         jButton4 = new javax.swing.JButton();
+        lblId = new javax.swing.JLabel();
+        txtId = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -59,12 +64,7 @@ public class frmSinhVien extends javax.swing.JFrame {
         jLabel3.setText("ĐTB");
 
         txtTen.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
-        txtTen.setText("jTextField2");
         txtTen.setToolTipText("");
-
-        txtTuoi.setText("jTextField3");
-
-        txtDTB.setText("jTextField4");
 
         jButton1.setText("Thêm");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -112,6 +112,14 @@ public class frmSinhVien extends javax.swing.JFrame {
             }
         });
 
+        lblId.setText("id");
+
+        txtId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIdActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -130,7 +138,12 @@ public class frmSinhVien extends javax.swing.JFrame {
                         .addGap(35, 35, 35)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txtTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTuoi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtTuoi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addComponent(lblId)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(62, 62, 62)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1)
@@ -139,16 +152,20 @@ public class frmSinhVien extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton4))
                     .addComponent(jButton3))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(101, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(57, 57, 57)
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblId)
+                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -167,7 +184,7 @@ public class frmSinhVien extends javax.swing.JFrame {
                     .addComponent(jButton3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         pack();
@@ -178,8 +195,9 @@ public class frmSinhVien extends javax.swing.JFrame {
         int tuoi = Integer.parseInt(txtTuoi.getText());
         double dtb = Double.parseDouble(txtDTB.getText());
         SinhVien1 sv = new SinhVien1(dtb,ten,tuoi);
-        ql.themSV(sv);
-        loadTable();
+        svs.themSV(sv);
+        loadTableDefault();
+        txtId.setText("");
         txtTen.setText("");
         txtTuoi.setText("");
         txtDTB.setText("");
@@ -187,9 +205,10 @@ public class frmSinhVien extends javax.swing.JFrame {
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // Xóa
-        String ten = txtTen.getText();
-        ql.xoaSVTheoTen(ten);
-        loadTable();
+        String id = txtId.getText();
+        svs.deleteSV(Integer.parseInt(id));
+        loadTableDefault();
+        txtId.setText("");
         txtTen.setText("");
         txtTuoi.setText("");
         txtDTB.setText("");
@@ -198,9 +217,10 @@ public class frmSinhVien extends javax.swing.JFrame {
     private void tblSinhVienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSinhVienMouseClicked
         // TODO add your handling code here:
         int row = tblSinhVien.getSelectedRow();
-        txtTen.setText(tblSinhVien.getValueAt(row, 0).toString());
-        txtTuoi.setText(tblSinhVien.getValueAt(row, 1).toString());
-        txtDTB.setText(tblSinhVien.getValueAt(row, 2).toString());
+        txtId.setText(tblSinhVien.getValueAt(row, 0).toString());
+        txtTen.setText(tblSinhVien.getValueAt(row, 1).toString());
+        txtTuoi.setText(tblSinhVien.getValueAt(row, 2).toString());
+        txtDTB.setText(tblSinhVien.getValueAt(row, 3).toString());
     }//GEN-LAST:event_tblSinhVienMouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -221,6 +241,10 @@ public class frmSinhVien extends javax.swing.JFrame {
             sv.getTen(),sv.getTuoi(),sv.getDtb()
         });
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void txtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIdActionPerformed
     private void loadTable(){
         DefaultTableModel model = (DefaultTableModel) tblSinhVien.getModel();
         model.setRowCount(0);
@@ -232,6 +256,25 @@ public class frmSinhVien extends javax.swing.JFrame {
                 sv.getDtb()
             });
         }
+    }
+    private void loadTableDefault(){
+        DefaultTableModel model = (DefaultTableModel) tblSinhVien.getModel();
+        model.setRowCount(0);
+
+        for(SinhVien1 sv : svs.getAll()){
+            model.addRow(new Object[]{
+                sv.getId(),
+                sv.getTen(),
+                sv.getTuoi(),
+                sv.getDtb()
+            });
+        }
+    }
+    private void setTxt(){
+        txtId.setColumns(5);
+        txtTen.setColumns(10);
+        txtTuoi.setColumns(10);
+        txtDTB.setColumns(10);
     }
     /**
      * @param args the command line arguments
@@ -267,8 +310,10 @@ public class frmSinhVien extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblId;
     private javax.swing.JTable tblSinhVien;
     private javax.swing.JTextField txtDTB;
+    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtTen;
     private javax.swing.JTextField txtTuoi;
     // End of variables declaration//GEN-END:variables
