@@ -4,6 +4,7 @@
  */
 package nhap.GUI;
 
+import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import nhap.QuanLySinhVien;
 import nhap.Service.SinhVienService;
@@ -48,7 +49,7 @@ public class frmSinhVien extends javax.swing.JFrame {
         txtDTB = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnTim = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblSinhVien = new javax.swing.JTable();
         jButton4 = new javax.swing.JButton();
@@ -80,10 +81,10 @@ public class frmSinhVien extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setText("Tìm");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnTim.setText("Tìm");
+        btnTim.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnTimActionPerformed(evt);
             }
         });
 
@@ -151,7 +152,7 @@ public class frmSinhVien extends javax.swing.JFrame {
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton4))
-                    .addComponent(jButton3))
+                    .addComponent(btnTim))
                 .addContainerGap(101, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -181,7 +182,7 @@ public class frmSinhVien extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtDTB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
+                    .addComponent(btnTim))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(14, Short.MAX_VALUE))
@@ -232,15 +233,20 @@ public class frmSinhVien extends javax.swing.JFrame {
         loadTable();
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnTimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimActionPerformed
         // TODO add your handling code here:
-        SinhVien1 sv =ql.timSV(txtTen.getText().trim());
+        ArrayList<SinhVien1> sv =svs.searchByName(txtTen.getText());
         DefaultTableModel model =(DefaultTableModel)  tblSinhVien.getModel();
         model.setRowCount(0);
-        model.addRow(new Object[]{
-            sv.getTen(),sv.getTuoi(),sv.getDtb()
-        });
-    }//GEN-LAST:event_jButton3ActionPerformed
+        for(SinhVien1 sv1 : sv){
+            model.addRow(new Object[]{
+                sv1.getId(),
+                sv1.getTen(),
+                sv1.getTuoi(),
+                sv1.getDtb()
+            });
+        }
+    }//GEN-LAST:event_btnTimActionPerformed
 
     private void txtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdActionPerformed
         // TODO add your handling code here:
@@ -302,9 +308,9 @@ public class frmSinhVien extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnTim;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

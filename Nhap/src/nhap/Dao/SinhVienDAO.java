@@ -70,4 +70,25 @@ public class SinhVienDAO {
         }
         return false;
     }
+    public ArrayList<SinhVien1> searchByName(String name){
+        ArrayList<SinhVien1> list = new ArrayList<>();
+        String sql = "SELECT * FROM SINHVIEN WHERE TEN LIKE ?";
+        try (Connection conn = ConnectJDBC.getConnection();
+            PreparedStatement pstm = conn.prepareStatement(sql)){
+            pstm.setString(1, "%"+name+"%");
+//            ResultSet res = pstm.executeQuery(sql); nghĩa là dùng cho Statement, còn ko truyền là dùng cho PreparedStatement
+            ResultSet res = pstm.executeQuery();
+            while(res.next()){
+                SinhVien1 sv = new SinhVien1();
+                sv.setId(res.getInt("id"));
+                sv.setTen(res.getString("ten"));
+                sv.setTuoi(res.getInt("tuoi"));
+                sv.setDtb(res.getDouble("dtb"));
+                list.add(sv);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

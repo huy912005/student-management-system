@@ -38,4 +38,9 @@ public class SinhVienService {
             return false;
         return svdao.delete(id);
     }
+    public ArrayList<SinhVien1>searchByName(String name){
+        if(name==null)
+            return new ArrayList<>();
+        return svdao.searchByName(name);
+    }
 }
