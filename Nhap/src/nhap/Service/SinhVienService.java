@@ -6,7 +6,7 @@ package nhap.Service;
 
 import java.util.ArrayList;
 import nhap.Dao.SinhVienDAO;
-import nhap.SinhVien1;
+import nhap.DTO.SinhVien1;
 
 /**
  *
@@ -16,9 +16,9 @@ public class SinhVienService {
     private SinhVienDAO svdao=new SinhVienDAO();
     public void themSV(SinhVien1 sv){
         if(sv==null)
-            System.out.println("Loi sinh vien rong!");
+            throw new IllegalArgumentException("Sinh vien null!");
         else
-            svdao.themSV(sv);
+            svdao.insert(sv);
     }
     public ArrayList<SinhVien1>getAll(){
         ArrayList<SinhVien1> listSV=svdao.getAll();
@@ -28,8 +28,7 @@ public class SinhVienService {
     }
     public boolean updateSV(SinhVien1 sv){
         if(sv.getTen().isEmpty()){
-            System.out.println("Ten khong duoc rong!");
-            return false;
+            throw new IllegalArgumentException("Ten khong duoc rong!");
         }
         return svdao.update(sv);
     }
@@ -42,5 +41,10 @@ public class SinhVienService {
         if(name==null)
             return new ArrayList<>();
         return svdao.searchByName(name);
+    }
+    public ArrayList<SinhVien1>sapXep(int so){
+        if(so<1 || so>3)
+            return new ArrayList<>();
+        return svdao.sortBy(so);
     }
 }

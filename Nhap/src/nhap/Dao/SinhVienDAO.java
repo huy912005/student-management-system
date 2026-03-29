@@ -6,14 +6,14 @@ package nhap.Dao;
 
 import java.sql.*;
 import java.util.ArrayList;
-import nhap.SinhVien1;
+import nhap.DTO.SinhVien1;
 
 /**
  *
  * @author ADMIN
  */
 public class SinhVienDAO {
-    public void themSV(SinhVien1 sv){
+    public void insert(SinhVien1 sv){
         String sql = "insert into sinhvien(ten, tuoi, dtb) VALUES(?,?,?)";
         try(Connection conn = ConnectJDBC.getConnection();
             PreparedStatement pstm = conn.prepareStatement(sql)) {
@@ -77,6 +77,35 @@ public class SinhVienDAO {
             PreparedStatement pstm = conn.prepareStatement(sql)){
             pstm.setString(1, "%"+name+"%");
 //            ResultSet res = pstm.executeQuery(sql); nghĩa là dùng cho Statement, còn ko truyền là dùng cho PreparedStatement
+            ResultSet res = pstm.executeQuery();
+            while(res.next()){
+                SinhVien1 sv = new SinhVien1();
+                sv.setId(res.getInt("id"));
+                sv.setTen(res.getString("ten"));
+                sv.setTuoi(res.getInt("tuoi"));
+                sv.setDtb(res.getDouble("dtb"));
+                list.add(sv);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    public ArrayList<SinhVien1> sortBy(int value){
+        ArrayList<SinhVien1> list = new ArrayList<>();
+        String key ="";
+        if(value==1){
+            key="ten";
+        }else if(value==2){
+            key="tuoi";
+        }else if(value==3){
+            key="dtb";
+        }
+        String sql = "SELECT * FROM sinhvien ";
+        if(!key.equals(""))
+            sql=sql+"ORDER BY "+key+" DESC";
+        try (Connection conn = ConnectJDBC.getConnection();
+            PreparedStatement pstm = conn.prepareStatement(sql)){
             ResultSet res = pstm.executeQuery();
             while(res.next()){
                 SinhVien1 sv = new SinhVien1();
