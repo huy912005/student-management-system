@@ -16,7 +16,8 @@ CREATE TABLE user (
 INSERT INTO SinhVien(id,ten,tuoi,dtb)
 VALUES(1,N'Phạm Minh Huy',21,10),
 	(2,N'Minh Huy',21,8),
-    (3,N'Phạm Huy',21,9);
+    (3,N'Phạm Huy',21,9),
+    (4,N'Nhi',9,10);
 INSERT INTO user(username, password, role) VALUES
 ('admin', MD5('123'), 'admin'),
 ('user1', MD5('123'), 'user');
