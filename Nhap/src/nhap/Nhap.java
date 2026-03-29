@@ -4,8 +4,10 @@
  */
 package nhap;
 
+import nhap.DTO.SinhVien1;
 import java.util.ArrayList;
 import java.util.Scanner;
+import nhap.GUI.frmLogin;
 import nhap.GUI.frmSinhVien;
 
 /**
@@ -118,7 +120,7 @@ public class Nhap {
 //        }while(n!=0);
 //    }
     public static void main(String[] args) {
-        frmSinhVien sinhVien = new frmSinhVien();
-        sinhVien.setVisible(true);
+        frmLogin  user = new frmLogin();
+        user.setVisible(true);
     }
 }
