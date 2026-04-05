@@ -1,21 +1,41 @@
 package com.JavaSpringBoot.BESpring.Service;
 
+import com.JavaSpringBoot.BESpring.DTO.Request.UserLoginRequest;
+import com.JavaSpringBoot.BESpring.DTO.Response.UserResponse;
 import com.JavaSpringBoot.BESpring.Entity.UserEnitity;
 import com.JavaSpringBoot.BESpring.Repository.UserRepository;
-import com.JavaSpringBoot.BESpring.Utils.PasswordUtils;
+import com.JavaSpringBoot.BESpring.converter.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
-    public UserEnitity login(String name, String pwd){
-        if(name.isEmpty()||pwd.isEmpty()){
-            System.out.println("name va password ko de trong!");
-            return null;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    public UserEnitity login(String username, String password){
+        UserEnitity user = userRepository.findByUsername(username);
+        if(user == null || !passwordEncoder.matches(password, user.getPassword())){
+            throw new RuntimeException("Sai tài khoản");
         }
-        String hashed = PasswordUtils.md5(pwd);
-        return userRepository.findByUsernameAndPassword(name,hashed);
+        return user;
+    }
+    public List<UserResponse> getAllUser(){
+        return userRepository.findAll()
+                .stream()
+                .map(UserMapper::toResponse)
+                .toList();
+    }
+    public UserResponse create(UserLoginRequest req){
+        UserEnitity user = new UserEnitity();
+        user.setUsername(req.getUsername());
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setRole(req.getRole());
+        UserEnitity saved = userRepository.save(user);
+        return UserMapper.toResponse(saved);
     }
 }
