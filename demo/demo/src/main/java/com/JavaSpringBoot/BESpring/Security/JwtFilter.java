@@ -19,16 +19,17 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
-
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getServletPath();
+
+        if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // 0. KHU VỰC MIỄN KIỂM TRA: Nếu khách vào các đường dẫn bắt đầu bằng /auth (đăng ký, đăng nhập)
         // thì cho qua luôn, vì lúc này họ đã có thẻ đâu mà kiểm tra!
-        if(path.startsWith("/auth")){
+        if(path.startsWith("/user/auth")){
             filterChain.doFilter(request, response);
             return;
         }
@@ -52,8 +53,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 // 5. LÀM CĂN CƯỚC TẠM THỜI:
                 // Tạo một cái thẻ nội bộ (auth) chứa: Tên, Mật khẩu (null vì đã có token rồi), và Chức vụ.
                 // Đoạn "ROLE_" + role giúp Spring hiểu đây là một vai trò chính thức.
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(username, null, List.of(new SimpleGrantedAuthority("ROLE_" + role)));
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, List.of(new SimpleGrantedAuthority("ROLE_" + role)));
 
                 // 6. BÁO CÁO BAN QUẢN LÝ: Nạp cái căn cước tạm thời này vào hệ thống của Spring Security.
                 // Kể từ giây phút này, Spring sẽ công nhận người này là "Hợp lệ" cho đến khi xong việc.

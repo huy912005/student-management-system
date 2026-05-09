@@ -1,0 +1,167 @@
+.btnThemSV {
+    background-color: #4CAF50; 
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btnThemSV:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 450px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 22px;
+    font-weight: 600;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 12px;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-content input {
+    padding: 12px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.modal-content input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* Button container */
+.modal-content form > div {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.modal-content button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.modal-content button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.modal-content button[type="submit"]:hover {
+    background-color: #45a049;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    transform: translateY(-1px);
+}
+
+.modal-content button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+.modal-content button[type="button"] {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.modal-content button[type="button"]:hover {
+    background-color: #d0d0d0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.modal-content button[type="button"]:active {
+    transform: translateY(0);
+}
+
+/* Close button (X) */
+.modal-content button.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: auto;
+    flex: none;
+}
+
+.modal-content button.close-btn:hover {
+    color: #333;
+    box-shadow: none;
+    transform: none;
+}

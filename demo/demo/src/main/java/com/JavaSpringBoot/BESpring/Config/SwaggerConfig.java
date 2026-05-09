@@ -21,6 +21,6 @@ public class SwaggerConfig {
                                         .bearerFormat("JWT")
                         )
                 )
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth")); // xác thực token 
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth")); // xác thực token
     }
 }
