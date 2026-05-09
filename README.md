@@ -1,19 +1,30 @@
-# Student Management System
+# Student Management Fullstack
 
-## Backend
+## Tech Stack
+
+Backend:
 - Spring Boot
-- JWT
 - Spring Security
+- JWT
 - MySQL
 
-## Frontend
+Frontend:
 - React
 - Axios
 - React Router
 
 ## Features
-- Login JWT
-- CRUD Sinh Vien
+
+- JWT Authentication
+- CRUD Student
 - Pagination
 - Search
 - Role Authorization
+
+## Run Backend
+
+...
+
+## Run Frontend
+
+...
