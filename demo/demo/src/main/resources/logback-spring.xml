@@ -1,0 +1,16 @@
+<!-- Nội dung file logback-spring.xml -->
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Thay đổi pattern cũ của bạn bằng pattern này -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{traceId}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+    
+    <!-- Để log của project bạn ở level DEBUG cho dễ nhìn -->
+    <logger name="com.JavaSpringBoot.BESpring" level="DEBUG" />
+</configuration>

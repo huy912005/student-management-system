@@ -37,4 +37,10 @@ public class GlobalExceptionHandler {
         // ex.getMessage() chính là lấy ra câu "Sai tài khoản!" để nhét vào hộp Response.
         return new ApiResponse<>(false, ex.getMessage(),null);
     }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResponse<?> handleException(Exception ex){
+        // ex.getMessage() chính là lấy ra câu "Sai tài khoản!" để nhét vào hộp Response.
+        return new ApiResponse<>(false, "Có lỗi xảy ra, vui lòng thử lại sau!",null);
+    }
 }
