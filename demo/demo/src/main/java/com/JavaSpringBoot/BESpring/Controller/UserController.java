@@ -3,9 +3,9 @@ package com.JavaSpringBoot.BESpring.Controller;
 import com.JavaSpringBoot.BESpring.DTO.Request.UserLoginRequest;
 import com.JavaSpringBoot.BESpring.Entity.UserEnitity;
 import com.JavaSpringBoot.BESpring.Security.TokenBlackList;
-import com.JavaSpringBoot.BESpring.Service.UserService;
+import com.JavaSpringBoot.BESpring.Service.impl.UserServiceImpl;
 import com.JavaSpringBoot.BESpring.Utils.JwtUtil;
-import com.JavaSpringBoot.BESpring.converter.UserMapper;
+import com.JavaSpringBoot.BESpring.mapper.UserMapper;
 import com.JavaSpringBoot.BESpring.DTO.Response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @PostMapping("/auth/login")
     public ApiResponse<?> login(@Valid @RequestBody UserLoginRequest request){

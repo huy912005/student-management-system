@@ -1,4 +1,4 @@
-package com.JavaSpringBoot.BESpring.converter;
+package com.JavaSpringBoot.BESpring.mapper;
 
 import com.JavaSpringBoot.BESpring.DTO.Request.SinhVienRequest;
 import com.JavaSpringBoot.BESpring.DTO.Response.SinhVienResponse;
