@@ -1,6 +1,7 @@
 package com.JavaSpringBoot.BESpring.Service.impl;
 
 import com.JavaSpringBoot.BESpring.DTO.Request.UserLoginRequest;
+import com.JavaSpringBoot.BESpring.DTO.Response.ApiResponse;
 import com.JavaSpringBoot.BESpring.DTO.Response.UserResponse;
 import com.JavaSpringBoot.BESpring.Entity.UserEnitity;
 import com.JavaSpringBoot.BESpring.Repository.UserRepository;
@@ -25,15 +26,15 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
-    public List<UserResponse> getAllUser(){
-        return userRepository.findAll().stream().map(UserMapper::toResponse).toList();
+    public ApiResponse<List<UserResponse> > getAllUser(){
+        return new ApiResponse<>(true,"Lấy danh sách sinh viên thành công!",userRepository.findAll().stream().map(UserMapper::toResponse).toList());
     }
-    public UserResponse create(UserLoginRequest req){
+    public ApiResponse<UserResponse> create(UserLoginRequest req){
         UserEnitity user = new UserEnitity();
         user.setUsername(req.getUsername());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
         user.setRole(req.getRole());
         UserEnitity saved = userRepository.save(user);
-        return UserMapper.toResponse(saved);
+        return new ApiResponse<>(true,"Tạo sinh viên mới thành công!",UserMapper.toResponse(saved));
     }
 }
