@@ -7,6 +7,8 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import {z} from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function SinhVienPage() {
     const [keyword, setKeyword] = useState("");
@@ -15,7 +17,14 @@ export default function SinhVienPage() {
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const queryClient = useQueryClient(); // khai báo  bộ nhớ cache
-    const {register,reset,handleSubmit,formState:{errors}}=useForm({});
+    const sinhVienSchema = z.object({
+        ten: z.string().min(2,"Tên không được để trống"),
+        tuoi: z.coerce.number().min(1,"Tuổi phải lớn hơn 0"),
+        dtb: z.coerce.number().min(0,"Điểm >= 0").max(10,"Điểm <= 10")
+    });
+    const {register,reset,handleSubmit,formState:{errors}}=useForm({
+        resolver: zodResolver(sinhVienSchema)
+    });
     const {data : queryData, isLoading, isError, error, refetch} = useQuery({
         queryKey:['sinhvien', keyword, page, size],
         queryFn:async () => {
@@ -92,7 +101,6 @@ export default function SinhVienPage() {
     if(isError){
        return <p>Có lỗi xảy ra</p>
     }
-    
     return (
         <AdminLayout>
             <h2>Quản lý sinh viên</h2>
@@ -155,11 +163,12 @@ export default function SinhVienPage() {
                             <h2>{editing ? "Sửa sinh viên" : "Thêm sinh viên"}</h2>
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 {/* <input placeholder="Tên" value={form.ten} onChange={(e) => setForm({ ...form, ten: e.target.value })} required/> */}
-                                <input placeholder="Tên" {...register('ten', { required: "Tên không được trống!" })} />
+                                <input placeholder="Tên" {...register('ten')} />
                                 {errors.ten &&(<p>{errors.ten.message}</p>)}
-                                <input type="number" placeholder="Tuổi" {...register('tuoi',{required:"Tuổi không được trống!",min:{value:1,message:"Tuổi phải lớn hơn 0!"}})}/>
+                                {/* <input type="number" placeholder="Tuổi" {...register('tuoi',{required:"Tuổi không được trống!",min:{value:1,message:"Tuổi phải lớn hơn 0!"}})}/> */}
+                                <input type="number" placeholder="Tuổi" {...register('tuoi')}/>
                                 {errors.tuoi &&(<p>{errors.tuoi.message}</p>)}
-                                <input type="number" placeholder="Điểm trung bình" {...register('dtb',{required:"Điểm không được trống!",min:{value:0,message:"Điểm phải >= 0"},max:{value:10,message:"Điểm phải <= 10"}})}/>
+                                <input type="number" placeholder="Điểm trung bình" {...register('dtb')}/>
                                 {errors.dtb &&(<p>{errors.dtb.message}</p>)}
                                 <div style={{ display: 'flex', gap: '10px' }}>
                                     <button type="submit">{editing ? "Chỉnh sửa" : "Thêm"}</button>
