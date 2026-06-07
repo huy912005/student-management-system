@@ -1,5 +1,9 @@
 package com.JavaSpringBoot.BESpring.Controller;
 
+import com.JavaSpringBoot.BESpring.Service.ImageUploadService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,19 +15,16 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/file")
+@RequiredArgsConstructor
 public class FileController {
+    private final ImageUploadService imageUploadService;
     @PostMapping("/upload")
-    public String upload(@RequestParam("file") MultipartFile file) throws IOException {
-        String noiLuu="F:/2025-2026/2026/java/New folder/";
-        //tạo folder nếu chưa có
-        File folder = new File(noiLuu);
-        if(!folder.exists()){
-            folder.mkdir();
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) throws IOException {
+        try {
+            String saveFileName = imageUploadService.uploadImage(file);
+            return ResponseEntity.ok("Upload thành công : " + saveFileName);
+        }catch(RuntimeException e){
+            return ResponseEntity.badRequest().body("Upload thất bại : "+e.getMessage());
         }
-        //đường dẫn lưu file
-        String path = noiLuu+file.getOriginalFilename();
-        //lưu file
-        file.transferTo(new File(path));
-        return "upload thành công : "+path;
     }
 }

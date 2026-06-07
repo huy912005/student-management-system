@@ -5,7 +5,8 @@ create table SinhVien(
 	id INT PRIMARY KEY auto_increment,
 	ten nvarchar(100),
     tuoi int,
-    dtb double
+    dtb double,
+    avatar VARCHAR(500)
 ) ;
 CREATE TABLE user (
     id INT AUTO_INCREMENT PRIMARY KEY,

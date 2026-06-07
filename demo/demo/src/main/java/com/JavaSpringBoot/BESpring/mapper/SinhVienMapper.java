@@ -11,7 +11,8 @@ public class SinhVienMapper {
                 sv.getId(),
                 sv.getTen(),
                 sv.getTuoi(),
-                sv.getDtb()
+                sv.getDtb(),
+                sv.getAvatar()
         );
     }
 
@@ -21,6 +22,7 @@ public class SinhVienMapper {
         sv.setTen(req.getTen());
         sv.setTuoi(req.getTuoi());
         sv.setDtb(req.getDtb());
+        sv.setAvatar(req.getAvatar());
         return sv;
     }
 }

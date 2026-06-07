@@ -1,35 +1,23 @@
 import { useState } from "react";
-import { login } from "../services/auth/authService";
 import './LoginPage.css';
-import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import Swal from "sweetalert2";
-import { toast } from "react-toastify";
+import { useLoginMutation } from "../hooks/login/useLoginMutation";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function LoginPage() {
-    const navigate = useNavigate();
     const [form, setForm] = useState({
         username:'',
         password:''
     });
-    const loginMutation = useMutation({
-        mutationFn:(loginData)=>login(loginData),
-        onSuccess:(res) => {
-            const data = res;
-            if(data.success) {
-                toast.success('Đăng nhập thành công');
-                localStorage.setItem('token', data.data.token);
-                localStorage.setItem('username', data.data.username);
-                navigate('/admin');
-            }
-            else
-                Swal.fire('Thất bại', data.message || 'Sai tài khoản hoặc mật khẩu', 'error');
-        },
-        onError:(error) => {
-            console.error("Login error", error);
-            toast.error('Đăng nhập thất bại');
-        }
+    const loginSchema = z.object({
+        username: z.string().min(1, "Username không được để trống"),
+        password: z.string().min(1, "Password không được để trống")
     })
+    const {register,handleSubmit,reset,formState:{errors}} = useForm({
+        resolver:zodResolver(loginSchema)
+    })
+    const loginMutation = useLoginMutation();
     const handleChange=(e) => {
         setForm({
             ...form,
@@ -38,15 +26,17 @@ export default function LoginPage() {
     }
     const handleLogin = async(e)=>{
         e.preventDefault();
-        loginMutation.mutate(form);
+        await loginMutation.mutateAsync(form);
     }
     return (
        <div className="container">
             <div className="card">
                 <h2 className="title">Login</h2>
                 <form onSubmit={handleLogin}>
-                    <input type="text" name="username" placeholder="Username" value={form.username} onChange={handleChange} className="input"/>
-                    <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} className="input"/>
+                    <input type="text" {...register("username")} placeholder="Username *" onChange={handleChange} className="input"/>
+                    {errors.username && <p className="error">{errors.username.message}</p>}
+                    <input type="password" {...register("password")} placeholder="Password *" onChange={handleChange} className="input"/>
+                    {errors.password && <p className="error">{errors.password.message}</p>}
                     <button type="submit" disabled={!form.username || !form.password} className="button">Login</button>
                     <p style={{textAlign:"center"}}>Chưa có tài khoản? <a href="/user">Đăng ký ngay</a></p>
                 </form>

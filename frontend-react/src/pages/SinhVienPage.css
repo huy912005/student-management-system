@@ -165,3 +165,30 @@
     box-shadow: none;
     transform: none;
 }
+
+.skeleton-row {
+    height: 40px;
+    width: 100%;
+    border-radius: 6px;
+
+    background: linear-gradient(
+        90deg,
+        #e2e8f0 25%,
+        #f8fafc 50%,
+        #e2e8f0 75%
+    );
+
+    background-size: 200% 100%;
+
+    animation: loading 1.2s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}

@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminLayout from "../layouts/AdminLayout";
-import { addSinhVien, deleteSinhVien, getAllSinhVien, searchSinhVien, updateSinhVien } from "../services/sinhvienService";
 import Swal from 'sweetalert2';
 import './SinhVienPage.css';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import {z} from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSinhVienQuery } from "../hooks/sinhVien/useSinhVienQuery";
+import { useDeleteSinhVien } from "../hooks/sinhVien/useDeleteSinhVien";
+import { useSaveSinhVien } from "../hooks/sinhVien/useSaveSinhVien";
+import SkeletonRow from "../components/SkeletonRow";
+import { uploadAvatar } from "../services/sinhvienService";
 
 export default function SinhVienPage() {
     const [keyword, setKeyword] = useState("");
@@ -16,7 +18,7 @@ export default function SinhVienPage() {
     const [size] = useState(5);
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState(null);
-    const queryClient = useQueryClient(); // khai báo  bộ nhớ cache
+    const [avatar, setAvatar] = useState(null);
     const sinhVienSchema = z.object({
         ten: z.string().min(2,"Tên không được để trống"),
         tuoi: z.coerce.number().min(1,"Tuổi phải lớn hơn 0"),
@@ -25,16 +27,15 @@ export default function SinhVienPage() {
     const {register,reset,handleSubmit,formState:{errors}}=useForm({
         resolver: zodResolver(sinhVienSchema)
     });
-    const {data : queryData, isLoading, isError, error, refetch} = useQuery({
-        queryKey:['sinhvien', keyword, page, size],
-        queryFn:async () => {
-            //gọi Api dựa vào có tìm kiếm hay không
-            if(keyword.trim()) 
-                return await searchSinhVien(keyword, page, size);
-            else 
-                return await getAllSinhVien(page, size);
-        }
-    });
+    // Debounce keyword để tránh xử lý quá nhiều
+    const [debounceKeyword, setDebounceKeyword] = useState(keyword);
+    useEffect(()=>{
+        const timer = setTimeout(()=>{
+            setDebounceKeyword(keyword);
+        },500);
+        return ()=>clearTimeout(timer);
+    },[keyword]);
+    const {data : queryData, isLoading, isError, error, refetch} = useSinhVienQuery(debounceKeyword, page, size);
     const sinhVienList = queryData?.data?.data || []; 
     const totalCount = queryData?.data?.meta?.total || 0;
     const totalPages = Math.ceil(totalCount / size);
@@ -50,17 +51,7 @@ export default function SinhVienPage() {
         setKeyword(e.target.value);
         setPage(0); 
     }
-    const deleteMutation = useMutation({
-        mutationFn:(id)=>deleteSinhVien(id),
-        onSuccess:()=>{
-            queryClient.invalidateQueries({queryKey:[`sinhvien`]});// xóa cache để tự động refetch
-            toast.success('Xóa sinh viên thành công');
-            setPage(0);
-        },
-        onError:()=>{
-            toast.error('Xóa sinh viên thất bại');
-        }
-    });
+    const deleteMutation = useDeleteSinhVien(setPage);
     const handleDelete = async (id) => {
         const result = await Swal.fire({
             title: 'Bạn có chắc chắn?',
@@ -76,27 +67,20 @@ export default function SinhVienPage() {
             deleteMutation.mutate(id);
         }
     };
-    const saveMutation = useMutation({
-        mutationFn: async({id, data}) => {
-            return id? await updateSinhVien(id, data) : await addSinhVien(data);
-        },
-        onSuccess:()=>{
-            queryClient.invalidateQueries({queryKey:[`sinhvien`]});//cache cũ rồi nên xóa đi để tự động gọi lại api lấy dữ liệu mới
-            toast.success(editing ? 'Đã cập nhật thông tin sinh viên.' : 'Đã thêm sinh viên mới.');
-            handleCloseModal();
-            setPage(0);
-        },
-        onError: () => {
-            toast.error(editing ? 'Cập nhật sinh viên thất bại' : 'Thêm sinh viên thất bại');
-        }
-    });
-   const onSubmit = (data) => {
-        saveMutation.mutate({ id: editing?.id, data: data });
-    };
     const handleCloseModal = () => {
         setOpen(false);
         reset();
         setEditing(null);
+    };
+    const saveMutation = useSaveSinhVien(editing, handleCloseModal, setPage);
+    const onSubmit = async (data) => {
+        console.log(data);
+        if(avatar){
+            const uploadRes = await uploadAvatar(avatar);
+            data.avatar= uploadRes.data;
+            console.log(data);
+        }
+        saveMutation.mutate({ id: editing?.id, data: data });
     };
     if(isError){
        return <p>Có lỗi xảy ra</p>
@@ -120,9 +104,11 @@ export default function SinhVienPage() {
                 </thead>
                 <tbody>
                     {isLoading ? (
-                            <tr>
-                                <td colSpan="5" style={{ textAlign: "center" }}>Đang tải...</td>
-                            </tr>
+                                <>
+                                    <SkeletonRow />
+                                    <SkeletonRow />
+                                    <SkeletonRow />
+                                </>
                         ) : sinhVienList.length > 0 ? (
                             sinhVienList.map((sinhVien) => (
                                 <tr key={sinhVien.id}>
@@ -170,6 +156,7 @@ export default function SinhVienPage() {
                                 {errors.tuoi &&(<p>{errors.tuoi.message}</p>)}
                                 <input type="number" placeholder="Điểm trung bình" {...register('dtb')}/>
                                 {errors.dtb &&(<p>{errors.dtb.message}</p>)}
+                                <input type="file" accept="image/*" onChange={(e)=>{console.log(e.target.files[0]);setAvatar(e.target.files[0]);}}/>
                                 <div style={{ display: 'flex', gap: '10px' }}>
                                     <button type="submit">{editing ? "Chỉnh sửa" : "Thêm"}</button>
                                     <button type="button" onClick={handleCloseModal}>Hủy</button>
