@@ -13,6 +13,7 @@ public class SinhVienRequest {
     @Min(value = 0,message = "Điểm >= 0")
     @Max(value = 10,message = "Điểm <= 10")
     private double dtb;
+    private String avatar;
 
     public int getId() {
         return id;
@@ -42,4 +43,8 @@ public class SinhVienRequest {
     public void setDtb(double dtb) {
         this.dtb = dtb;
     }
+
+    public String getAvatar() {return avatar;}
+
+    public void setAvatar(String avatar) {this.avatar = avatar;}
 }

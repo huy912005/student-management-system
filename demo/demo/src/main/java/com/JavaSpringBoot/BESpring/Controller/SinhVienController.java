@@ -5,16 +5,20 @@ import com.JavaSpringBoot.BESpring.DTO.Response.SinhVienResponse;
 import com.JavaSpringBoot.BESpring.DTO.Response.page.PageResponse;
 import com.JavaSpringBoot.BESpring.Service.ISinhVienService;
 import com.JavaSpringBoot.BESpring.DTO.Response.ApiResponse;
+import com.JavaSpringBoot.BESpring.Service.impl.ImageUploadServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/sinhvien")
 public class SinhVienController {
     @Autowired
     private ISinhVienService sinhVienService;
+    @Autowired
+    private ImageUploadServiceImpl imageUploadService;
     @GetMapping
     public ApiResponse<PageResponse<SinhVienResponse>> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
         return new ApiResponse<>(true, "Get list success", sinhVienService.getAll(page, size));
@@ -37,5 +41,9 @@ public class SinhVienController {
     @GetMapping("/search")
     public ApiResponse<?> search(@RequestParam String name, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
         return new ApiResponse<>(true, "Search success", sinhVienService.search(name, page, size));
+    }
+    @PostMapping("/uploads")
+    public ApiResponse<?> upload(@RequestParam("file") MultipartFile file){
+        return new ApiResponse<>(true,"upload success",imageUploadService.uploadImage(file));
     }
 }

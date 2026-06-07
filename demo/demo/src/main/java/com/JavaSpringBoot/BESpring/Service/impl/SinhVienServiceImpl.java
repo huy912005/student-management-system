@@ -1,13 +1,13 @@
-package com.JavaSpringBoot.BESpring.Service;
+package com.JavaSpringBoot.BESpring.Service.impl;
 
 import com.JavaSpringBoot.BESpring.DTO.Request.SinhVienRequest;
 import com.JavaSpringBoot.BESpring.DTO.Response.SinhVienResponse;
-import com.JavaSpringBoot.BESpring.DTO.Response.UserResponse;
 import com.JavaSpringBoot.BESpring.DTO.Response.page.Meta;
 import com.JavaSpringBoot.BESpring.DTO.Response.page.PageResponse;
 import com.JavaSpringBoot.BESpring.Entity.SinhVienEntity;
 import com.JavaSpringBoot.BESpring.Repository.SinhVIenRepository;
-import com.JavaSpringBoot.BESpring.converter.SinhVienMapper;
+import com.JavaSpringBoot.BESpring.Service.ISinhVienService;
+import com.JavaSpringBoot.BESpring.mapper.SinhVienMapper;
 
 import com.JavaSpringBoot.BESpring.Exception.BadRequestException;
 import com.JavaSpringBoot.BESpring.Exception.ResourceNotFoundException;
@@ -110,21 +110,14 @@ public class SinhVienServiceImpl implements ISinhVienService {
     }
     public PageResponse<SinhVienResponse> search(String name, int page, int size){
         Page<SinhVienEntity> pageData = sinhVIenRepository.findByTenContaining(name, PageRequest.of(page, size));
-
-        List<SinhVienResponse> data = pageData.getContent()
-                .stream()
-                .map(SinhVienMapper::toResponse)
-                .toList();
-
+        List<SinhVienResponse> data = pageData.getContent().stream().map(SinhVienMapper::toResponse).toList();
         Meta meta = new Meta();
         meta.setPage(page);
         meta.setSize(size);
         meta.setTotal(pageData.getTotalElements());
-
         PageResponse<SinhVienResponse> res = new PageResponse<>();
         res.setData(data);
         res.setMeta(meta);
-
         return res;
     }
 }

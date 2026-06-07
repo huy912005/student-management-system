@@ -1,14 +1,23 @@
 import { useState } from "react";
-import { login } from "../services/auth/authService";
 import './LoginPage.css';
-import { useNavigate } from "react-router-dom";
+import { useLoginMutation } from "../hooks/login/useLoginMutation";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function LoginPage() {
-    const navigate = useNavigate();
     const [form, setForm] = useState({
         username:'',
         password:''
     });
+    const loginSchema = z.object({
+        username: z.string().min(1, "Username không được để trống"),
+        password: z.string().min(1, "Password không được để trống")
+    })
+    const {register,handleSubmit,reset,formState:{errors}} = useForm({
+        resolver:zodResolver(loginSchema)
+    })
+    const loginMutation = useLoginMutation();
     const handleChange=(e) => {
         setForm({
             ...form,
@@ -17,42 +26,20 @@ export default function LoginPage() {
     }
     const handleLogin = async(e)=>{
         e.preventDefault();
-        try {
-            const res = await login(form);
-            console.log("Full response:", JSON.stringify(res.data, null, 2));
-            
-            // Fix: Response là string chứa 2 JSON ghép lại, lấy JSON đầu tiên
-            let data = res.data;
-            if (typeof data === 'string') {
-                try {
-                    const jsonMatch = data.match(/\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g);
-                    if (jsonMatch && jsonMatch[0]) {
-                        data = JSON.parse(jsonMatch[0]);
-                    }
-                } catch (e) {
-                    console.error("Failed to parse response:", e);
-                }
-            }
-            
-            if (data.success) {
-                localStorage.setItem('token', data.data.token);
-                localStorage.setItem('username', data.data.username);
-                navigate('/admin');
-            } else {
-                console.error("Login failed:", data.message);
-            }
-        } catch (error) {
-            console.error("Login error", error);
-        }
+        await loginMutation.mutateAsync(form);
     }
     return (
        <div className="container">
             <div className="card">
                 <h2 className="title">Login</h2>
-                <input type="text" name="username" placeholder="Username" value={form.username} onChange={handleChange} className="input"/>
-                <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} className="input"/>
-                <button onClick={handleLogin} disabled={!form.username || !form.password} className="button">Login</button>
-                <p style={{textAlign:"center"}}>Chưa có tài khoản? <a href="/user">Đăng ký ngay</a></p>
+                <form onSubmit={handleLogin}>
+                    <input type="text" {...register("username")} placeholder="Username *" onChange={handleChange} className="input"/>
+                    {errors.username && <p className="error">{errors.username.message}</p>}
+                    <input type="password" {...register("password")} placeholder="Password *" onChange={handleChange} className="input"/>
+                    {errors.password && <p className="error">{errors.password.message}</p>}
+                    <button type="submit" disabled={!form.username || !form.password} className="button">Login</button>
+                    <p style={{textAlign:"center"}}>Chưa có tài khoản? <a href="/user">Đăng ký ngay</a></p>
+                </form>
             </div>
         </div>
     )

@@ -1,4 +1,4 @@
-package com.JavaSpringBoot.BESpring.converter;
+package com.JavaSpringBoot.BESpring.mapper;
 
 import com.JavaSpringBoot.BESpring.DTO.Request.SinhVienRequest;
 import com.JavaSpringBoot.BESpring.DTO.Response.SinhVienResponse;
@@ -11,7 +11,8 @@ public class SinhVienMapper {
                 sv.getId(),
                 sv.getTen(),
                 sv.getTuoi(),
-                sv.getDtb()
+                sv.getDtb(),
+                sv.getAvatar()
         );
     }
 
@@ -21,6 +22,7 @@ public class SinhVienMapper {
         sv.setTen(req.getTen());
         sv.setTuoi(req.getTuoi());
         sv.setDtb(req.getDtb());
+        sv.setAvatar(req.getAvatar());
         return sv;
     }
 }

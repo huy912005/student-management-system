@@ -35,7 +35,7 @@ public class SecurityConfig {
                         // (Ví dụ: /auth/login, /auth/register thì không cần thẻ)
                         .requestMatchers("/user/auth/**").permitAll()
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers("/user/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/user/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/sinhvien/**","/uploads/**").permitAll()
 
                         // 2. Tất cả các yêu cầu còn lại (như /sinhvien)
                         // THÌ BẮT BUỘC phải đăng nhập (có thẻ) mới được vào

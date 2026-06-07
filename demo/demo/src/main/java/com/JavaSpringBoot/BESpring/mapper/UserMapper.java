@@ -1,7 +1,4 @@
-package com.JavaSpringBoot.BESpring.converter;
-
-import com.JavaSpringBoot.BESpring.DTO.Response.UserResponse;
-import com.JavaSpringBoot.BESpring.Entity.UserEnitity;
+package com.JavaSpringBoot.BESpring.mapper;
 
 import com.JavaSpringBoot.BESpring.DTO.Response.UserResponse;
 import com.JavaSpringBoot.BESpring.Entity.UserEnitity;
@@ -17,10 +14,6 @@ public class UserMapper {
     }
 
     public static UserResponse toLoginResponse(UserEnitity user, String token){
-        return new UserResponse(
-                user.getUsername(),
-                user.getRole(),
-                token
-        );
+        return new UserResponse(user.getUsername(), user.getRole(), token);
     }
 }

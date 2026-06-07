@@ -11,6 +11,7 @@ public class SinhVienEntity {
     private String ten;
     private int tuoi;
     private double dtb;
+    private String avatar;
 
     public int getId() {
         return id;
@@ -43,4 +44,8 @@ public class SinhVienEntity {
     public void setDtb(double dtb) {
         this.dtb = dtb;
     }
+
+    public String getAvatar() {return avatar;}
+
+    public void setAvatar(String avatar) {this.avatar = avatar;}
 }
