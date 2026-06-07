@@ -1,0 +1,562 @@
+=====================================
+SECURITY + JWT
+==============
+
+SecurityConfig
+
+1. Tắt CSRF
+   csrf.disable()
+
+2. Cấu hình CORS
+   Cho React localhost:5173 gọi API
+
+3. PermitAll
+   /user/auth/**
+   /swagger/**
+   /uploads/**
+   /sinhvien/**
+
+4. authenticated()
+   API nào không permit thì bắt login
+
+5. addFilterBefore()
+   Gắn JwtFilter vào trước UsernamePasswordAuthenticationFilter
+
+---
+
+JwtFilter
+
+1. Chặn tất cả request đi vào hệ thống
+
+2. Nếu là:
+   /user/auth/login
+
+   => cho đi luôn
+
+3. Lấy Authorization Header
+
+   Authorization:
+   Bearer xxx
+
+4. Cắt chữ Bearer
+
+5. Lấy token
+
+6. JwtUtil đọc token
+
+   getUsername()
+
+   getRole()
+
+7. Tạo Authentication
+
+   UsernamePasswordAuthenticationToken
+
+8. Nạp vào
+
+   SecurityContextHolder
+
+9. Spring hiểu user đã login
+
+---
+
+JwtUtil
+
+generateToken()
+
+1. Ghi username
+
+2. Ghi role
+
+3. Ghi thời gian tạo
+
+4. Ghi thời gian hết hạn
+
+5. Dùng SECRET ký token
+
+6. Trả token về frontend
+
+---
+
+Logout
+
+1. User logout
+
+2. Lấy token hiện tại
+
+3. Add vào TokenBlackList
+
+4. JwtFilter kiểm tra
+
+   nếu token nằm trong blacklist
+
+   => chặn
+
+=====================================
+PASSWORD
+========
+
+BCryptPasswordEncoder
+
+Đăng ký
+
+password
+
+↓
+
+encode()
+
+↓
+
+Lưu DB
+
+Login
+
+password người dùng nhập
+
+↓
+
+matches()
+
+↓
+
+So sánh với DB
+
+=====================================
+UPLOAD HÌNH ẢNH
+===============
+
+ImageUploadService
+
+1. Nhận MultipartFile
+
+2. Lấy tên file gốc
+
+   file.getOriginalFilename()
+
+   Ví dụ:
+
+   avatar.jpg
+
+3. Tạo UUID
+
+   UUID.randomUUID()
+
+4. Ghép tên mới
+
+   123abc_avatar.jpg
+
+5. Kiểm tra thư mục uploads
+
+   nếu chưa có
+
+   createDirectories()
+
+6. Tạo đường dẫn
+
+   uploads/123abc_avatar.jpg
+
+7. Copy file
+
+   Files.copy()
+
+8. Trả về tên file
+
+   123abc_avatar.jpg
+
+---
+
+StaticResourceConfig
+
+1. Khai báo
+
+   /uploads/**
+
+2. Trỏ tới
+
+   file:uploads/
+
+3. Cho phép truy cập
+
+   http://localhost:8080/uploads/abc.jpg
+
+=====================================
+SINH VIÊN CRUD
+==============
+
+Frontend
+
+↓
+
+Axios
+
+↓
+
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+MySQL
+
+---
+
+Create
+
+SinhVienRequest
+
+↓
+
+Mapper
+
+↓
+
+Entity
+
+↓
+
+save()
+
+↓
+
+Database
+
+↓
+
+Mapper
+
+↓
+
+Response
+
+---
+
+Update
+
+Tìm sinh viên
+
+↓
+
+Có
+
+↓
+
+set dữ liệu mới
+
+↓
+
+save()
+
+↓
+
+Response
+
+---
+
+Delete
+
+Kiểm tra tồn tại
+
+↓
+
+deleteById()
+
+---
+
+Search
+
+findByTenContaining()
+
+=====================================
+MAPPER
+======
+
+Tại sao phải có Mapper ?
+
+Không cho Controller làm việc trực tiếp với Entity
+
+Request
+
+↓
+
+DTO
+
+↓
+
+Mapper
+
+↓
+
+Entity
+
+↓
+
+DB
+
+---
+
+DB
+
+↓
+
+Entity
+
+↓
+
+Mapper
+
+↓
+
+Response DTO
+
+↓
+
+Frontend
+
+=====================================
+GLOBAL EXCEPTION
+================
+
+Mục đích:
+
+Không để Spring trả lỗi dài ngoằng
+
+---
+
+Validation Error
+
+@NotBlank
+
+@Min
+
+@Max
+
+↓
+
+MethodArgumentNotValidException
+
+↓
+
+Trả message đẹp
+
+---
+
+RuntimeException
+
+Ví dụ:
+
+throw new RuntimeException("Sai tài khoản")
+
+↓
+
+GlobalExceptionHandler
+
+↓
+
+JSON
+
+{
+success:false,
+message:"Sai tài khoản"
+}
+
+=====================================
+LOGGING FILTER
+==============
+
+Mỗi request
+
+↓
+
+Tạo traceId
+
+↓
+
+UUID
+
+↓
+
+MDC.put()
+
+↓
+
+Log nào cũng mang traceId
+
+↓
+
+Dễ debug lỗi
+
+=====================================
+SWAGGER
+=======
+
+SwaggerConfig
+
+1. Khai báo Bearer Token
+
+2. Test API trên giao diện web
+
+3. Không cần Postman
+
+=====================================
+REACT QUERY
+===========
+
+useQuery
+
+Dùng cho:
+
+* getAll
+* search
+
+Tự cache dữ liệu
+
+---
+
+useMutation
+
+Dùng cho:
+
+* add
+* update
+* delete
+
+---
+
+invalidateQueries()
+
+Xóa cache
+
+↓
+
+Tự gọi API lại
+
+↓
+
+Table tự refresh
+
+=====================================
+AXIOS INTERCEPTOR
+=================
+
+Request
+
+↓
+
+Tự động gắn token
+
+Authorization:
+Bearer xxx
+
+---
+
+Response
+
+Nếu 401
+
+↓
+
+Xóa token
+
+↓
+
+Đá về Login
+
+=====================================
+PROTECTED ROUTE
+===============
+
+Kiểm tra token
+
+Có token
+
+↓
+
+Cho vào Admin
+
+---
+
+Không có token
+
+↓
+
+Navigate("/")
+
+↓
+
+Về Login
+
+=====================================
+UPLOAD AVATAR FRONTEND
+======================
+
+Chọn file
+
+↓
+
+setAvatar(file)
+
+↓
+
+onSubmit()
+
+↓
+
+uploadAvatar(file)
+
+↓
+
+Backend lưu ảnh
+
+↓
+
+Trả về
+
+abc123_avatar.jpg
+
+↓
+
+data.avatar = abc123_avatar.jpg
+
+↓
+
+addSinhVien(data)
+
+↓
+
+Lưu tên ảnh vào DB
+
+=====================================
+THỨ TỰ HỌC LẠI PROJECT
+======================
+
+1. Entity
+
+2. DTO
+
+3. Mapper
+
+4. Repository
+
+5. Service
+
+6. Controller
+
+7. Exception
+
+8. Security
+
+9. React Service
+
+10. React Query
+
+11. Page
+
+12. Upload Avatar
