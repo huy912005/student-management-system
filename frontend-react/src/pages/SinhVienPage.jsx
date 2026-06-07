@@ -96,6 +96,7 @@ export default function SinhVienPage() {
                 <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Hình ảnh</th>
                     <th>Tên</th>
                     <th>Tuổi</th>
                     <th>DTB</th>
@@ -113,6 +114,7 @@ export default function SinhVienPage() {
                             sinhVienList.map((sinhVien) => (
                                 <tr key={sinhVien.id}>
                                     <td>{sinhVien.id}</td>
+                                    <td>{sinhVien.avatar && <img src={`${import.meta.env.VITE_API_URL}/uploads/${sinhVien.avatar}`} alt = "avatar" className="avatar"/>}</td>
                                     <td>{sinhVien.ten}</td>
                                     <td>{sinhVien.tuoi}</td>
                                     <td>{sinhVien.dtb}</td>

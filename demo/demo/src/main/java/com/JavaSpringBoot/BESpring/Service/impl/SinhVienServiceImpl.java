@@ -7,12 +7,14 @@ import com.JavaSpringBoot.BESpring.DTO.Response.page.PageResponse;
 import com.JavaSpringBoot.BESpring.Entity.SinhVienEntity;
 import com.JavaSpringBoot.BESpring.Repository.SinhVIenRepository;
 import com.JavaSpringBoot.BESpring.Service.ISinhVienService;
+import com.JavaSpringBoot.BESpring.Service.ImageUploadService;
 import com.JavaSpringBoot.BESpring.mapper.SinhVienMapper;
 
 import com.JavaSpringBoot.BESpring.Exception.BadRequestException;
 import com.JavaSpringBoot.BESpring.Exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,14 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SinhVienServiceImpl implements ISinhVienService {
     private static final Logger log = LoggerFactory.getLogger(SinhVienServiceImpl.class);
-    @Autowired
-    private SinhVIenRepository sinhVIenRepository;
+    private final SinhVIenRepository sinhVIenRepository;
+    private final ImageUploadService imageUploadService;
     @Override
     public PageResponse<SinhVienResponse> getAll(int page, int size) {
         log.debug("Lấy danh sách sinh viên, page={}, size={}", page, size);
@@ -94,18 +98,26 @@ public class SinhVienServiceImpl implements ISinhVienService {
             entity.setDtb(sinhVienRequest.getDtb());
         if(sinhVienRequest.getTuoi()!=0)
             entity.setTuoi(sinhVienRequest.getTuoi());
-        SinhVienEntity saved = sinhVIenRepository.save(entity);  
+        String oldAvatar = entity.getAvatar();
+        if(sinhVienRequest.getAvatar()!=null && !sinhVienRequest.getAvatar().isBlank())
+            entity.setAvatar(sinhVienRequest.getAvatar());
+        SinhVienEntity saved = sinhVIenRepository.save(entity);
+        if(oldAvatar!=null && !oldAvatar.isBlank() && !oldAvatar.equals(saved.getAvatar()))
+            imageUploadService.deleteImage(oldAvatar);
         log.info("Cập nhật thành công sinh viên id={}", id);
         return SinhVienMapper.toResponse(saved);
     }
     @Transactional
     public void delete(int id){
         log.debug("Xóa sinh viên id={}", id);
-        if (!sinhVIenRepository.existsById(id)) {
+        SinhVienEntity entity = sinhVIenRepository.findById(id).orElseThrow(()->{
             log.warn("Xóa thất bại - không tìm thấy sinh viên id={}", id);
-            throw new ResourceNotFoundException("Không tìm thấy sinh viên với id: " + id);
-        }
+            return new ResourceNotFoundException("Không tìm thấy sinh viên với id: " + id);
+        });
+        String oldAvatar = entity.getAvatar();
         sinhVIenRepository.deleteById(id);
+        if(oldAvatar!=null && !oldAvatar.isBlank())
+            imageUploadService.deleteImage(oldAvatar);
         log.info("Đã xóa sinh viên id={} thành công", id);
     }
     public PageResponse<SinhVienResponse> search(String name, int page, int size){

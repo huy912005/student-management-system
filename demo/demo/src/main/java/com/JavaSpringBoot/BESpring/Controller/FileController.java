@@ -4,10 +4,7 @@ import com.JavaSpringBoot.BESpring.Service.ImageUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -26,5 +23,10 @@ public class FileController {
         }catch(RuntimeException e){
             return ResponseEntity.badRequest().body("Upload thất bại : "+e.getMessage());
         }
+    }
+    @DeleteMapping("/clean")
+    public ResponseEntity<String> clean(){
+        imageUploadService.cleanupOrphanImages();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
