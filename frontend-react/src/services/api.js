@@ -35,18 +35,14 @@ api.interceptors.response.use(
           localStorage.setItem("accessToken",newAccessToken);
           originalRequest.headers.Authorization =`Bearer ${newAccessToken}`;
           return api(originalRequest);
-        } catch (error) {
-          console.error("Lỗi làm mới token: ", error);
+        } catch (refreshError) {
+          console.error("Lỗi làm mới token: ", refreshError);
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
           localStorage.removeItem('username');
-          window.location.href = '/admin';
+          window.location.href = '/';
         }
        }
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('username');
-      window.location.href = '/';
       return Promise.reject(error);
     }
 );
