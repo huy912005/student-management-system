@@ -85,6 +85,10 @@ export default function SinhVienPage() {
     if(isError){
        return <p>Có lỗi xảy ra</p>
     }
+
+    const role = localStorage.getItem("role");
+    const isAdmin = role === "admin";
+
     return (
         <AdminLayout>
             <h2>Quản lý sinh viên</h2>
@@ -118,13 +122,15 @@ export default function SinhVienPage() {
                                     <td>{sinhVien.ten}</td>
                                     <td>{sinhVien.tuoi}</td>
                                     <td>{sinhVien.dtb}</td>
-                                    <td>
+                                    <td style={{ textAlign: "center" }}>
                                         <button onClick={()=>{setEditing(sinhVien); reset({ten: sinhVien.ten,tuoi: sinhVien.tuoi,dtb: sinhVien.dtb}); setOpen(true);}}>
                                             <FaEdit style={{ color: 'blue', fontSize: '18px' }} />
                                         </button>
-                                        <button onClick={() => handleDelete(sinhVien.id)} disabled={deleteMutation.isPending}>
-                                            <FaTrash style={{ color: 'red', fontSize: '18px' }} />
-                                        </button>   
+                                        {isAdmin && (
+                                            <button onClick={() => handleDelete(sinhVien.id)} disabled={deleteMutation.isPending }>
+                                                <FaTrash style={{ color: 'red', fontSize: '18px' }}/>
+                                            </button> 
+                                        )}  
                                     </td>
                                 </tr>
                             ))

@@ -14,6 +14,7 @@ export const useLoginMutation=()=>{
                 localStorage.setItem('accessToken', data.data.accessToken);
                 localStorage.setItem('refreshToken', data.data.refreshToken);
                 localStorage.setItem('username', data.data.userName);
+                localStorage.setItem('role', data.data.role);
                 navigate('/admin');
             }
         },

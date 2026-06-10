@@ -1,6 +1,8 @@
 package com.JavaSpringBoot.BESpring.Service.impl;
 
 import com.JavaSpringBoot.BESpring.DTO.Request.SinhVienRequest;
+import com.JavaSpringBoot.BESpring.DTO.Response.ApiResponse;
+import com.JavaSpringBoot.BESpring.DTO.Response.DashboardResponse;
 import com.JavaSpringBoot.BESpring.DTO.Response.SinhVienResponse;
 import com.JavaSpringBoot.BESpring.DTO.Response.page.Meta;
 import com.JavaSpringBoot.BESpring.DTO.Response.page.PageResponse;
@@ -131,5 +133,17 @@ public class SinhVienServiceImpl implements ISinhVienService {
         res.setData(data);
         res.setMeta(meta);
         return res;
+    }
+
+    @Override
+    public ApiResponse<DashboardResponse> dashBoard() {
+        DashboardResponse response = new DashboardResponse();
+        response.setTongSinhVien(sinhVIenRepository.count());
+        Double avg = sinhVIenRepository.getAvgSinhVien();
+        Double diemCaoNhat = sinhVIenRepository.getDiemCaoNhat();
+        response.setDtb((avg==null)?0.0:avg);
+        response.setSinhVienGioi(sinhVIenRepository.getSinhVienGioi());
+        response.setDiemCaoNhat(diemCaoNhat==null?0.0:diemCaoNhat);
+        return new ApiResponse<>(true,"Get dashBoard thành công",response);
     }
 }
