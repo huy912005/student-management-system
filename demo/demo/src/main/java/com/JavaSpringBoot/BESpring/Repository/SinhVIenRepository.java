@@ -23,7 +23,20 @@ public interface SinhVIenRepository extends JpaRepository<SinhVienEntity,Integer
     """)
     Long getSinhVienGioi();
     @Query(""" 
+        SELECT COUNT(s) FROM SinhVienEntity s WHERE s.dtb >= 6.5 AND s.dtb < 8
+    """)
+    Long getSinhVienKha();
+    @Query(""" 
+        SELECT COUNT(s) FROM SinhVienEntity s WHERE s.dtb >= 5 AND s.dtb < 6.5
+    """)
+    Long getSinhVienTrungBinh();
+    @Query(""" 
+        SELECT COUNT(s) FROM SinhVienEntity s WHERE s.dtb < 5
+    """)
+    Long getSinhVienYeu();
+    @Query(""" 
         SELECT MAX(s.dtb) FROM SinhVienEntity s
     """)
     Double getDiemCaoNhat();
+    List<SinhVienEntity> findTop5ByOrderByDtbDesc();
 }

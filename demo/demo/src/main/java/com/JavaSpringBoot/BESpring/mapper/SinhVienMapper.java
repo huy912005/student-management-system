@@ -2,6 +2,7 @@ package com.JavaSpringBoot.BESpring.mapper;
 
 import com.JavaSpringBoot.BESpring.DTO.Request.SinhVienRequest;
 import com.JavaSpringBoot.BESpring.DTO.Response.SinhVienResponse;
+import com.JavaSpringBoot.BESpring.DTO.Response.TopSinhVienResponse;
 import com.JavaSpringBoot.BESpring.Entity.SinhVienEntity;
 
 public class SinhVienMapper {
@@ -24,5 +25,8 @@ public class SinhVienMapper {
         sv.setDtb(req.getDtb());
         sv.setAvatar(req.getAvatar());
         return sv;
+    }
+    public static TopSinhVienResponse toTopSinhVienResponse(SinhVienEntity sv){
+        return new TopSinhVienResponse(sv.getTen(),sv.getDtb());
     }
 }

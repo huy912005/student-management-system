@@ -4,6 +4,7 @@ import com.JavaSpringBoot.BESpring.DTO.Request.SinhVienRequest;
 import com.JavaSpringBoot.BESpring.DTO.Response.ApiResponse;
 import com.JavaSpringBoot.BESpring.DTO.Response.DashboardResponse;
 import com.JavaSpringBoot.BESpring.DTO.Response.SinhVienResponse;
+import com.JavaSpringBoot.BESpring.DTO.Response.TopSinhVienResponse;
 import com.JavaSpringBoot.BESpring.DTO.Response.page.Meta;
 import com.JavaSpringBoot.BESpring.DTO.Response.page.PageResponse;
 import com.JavaSpringBoot.BESpring.Entity.SinhVienEntity;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -144,6 +146,12 @@ public class SinhVienServiceImpl implements ISinhVienService {
         response.setDtb((avg==null)?0.0:avg);
         response.setSinhVienGioi(sinhVIenRepository.getSinhVienGioi());
         response.setDiemCaoNhat(diemCaoNhat==null?0.0:diemCaoNhat);
+        List<SinhVienEntity> topSV = sinhVIenRepository.findTop5ByOrderByDtbDesc();
+        List<TopSinhVienResponse> topSvResponse = topSV.stream().map(SinhVienMapper::toTopSinhVienResponse).toList();
+        response.setTopSinhVien(topSvResponse);
+        response.setSinhVienKha(sinhVIenRepository.getSinhVienKha());
+        response.setSinhVienTrungBinh(sinhVIenRepository.getSinhVienTrungBinh());
+        response.setSinhVienYeu(sinhVIenRepository.getSinhVienYeu());
         return new ApiResponse<>(true,"Get dashBoard thành công",response);
     }
 }

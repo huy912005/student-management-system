@@ -1,12 +1,12 @@
 .admin{
     display: flex;
-    height: 100vh;
+    height: auto;
 }
 .sidebar{
-    width: 250px;
-    background: #1e293b;
-    color: white;
-    padding: 20px;
+    width:260px;
+    background:#0f172a;
+    color:white;
+    padding:24px;
     h2{
         margin-bottom: 20px;
     }
@@ -16,7 +16,7 @@
         margin: 0;
     }
     li{
-        margin-bottom: 15px;
+        margin-bottom: 0px;
         cursor: pointer;
         padding: 10px;
         border-radius: 6px;
@@ -30,14 +30,41 @@
     flex-direction: column;
 }
 .header{
-   height: 60px;
-  background: #f1f5f9;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  font-weight: bold;
+    height:70px;
+    background:white;
+    border-radius:16px;
+    padding:0 24px;
+    box-shadow:0 4px 20px rgba(15,23,42,.05);
+    display:flex;
+    align-items:center;
+    font-weight:600;
 }
 .content {
   flex: 1;
   padding: 20px;
+}
+.menu-link{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 16px;
+    border-radius:12px;
+    text-decoration:none;
+    color:#cbd5e1;
+    transition:all .25s ease;
+}
+.menu-link:hover{
+    background:#334155;
+    color:white;
+}
+.menu-link.active{
+    background:#3b82f6;
+    color:white;
+    font-weight:700;
+}
+.sidebar-title{
+    font-size:24px;
+    margin-bottom:30px;
+    font-weight:700;
+    text-align: center;
 }
