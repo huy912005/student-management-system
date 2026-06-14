@@ -18,4 +18,5 @@ public class DashboardResponse {
     private Long sinhVienYeu;
     private Double diemCaoNhat;
     List<TopSinhVienResponse> topSinhVien;
+    List<SinhVienTrendResponse> sinhVienTrend;
 }

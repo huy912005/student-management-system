@@ -1,10 +1,7 @@
 package com.JavaSpringBoot.BESpring.Service.impl;
 
 import com.JavaSpringBoot.BESpring.DTO.Request.SinhVienRequest;
-import com.JavaSpringBoot.BESpring.DTO.Response.ApiResponse;
-import com.JavaSpringBoot.BESpring.DTO.Response.DashboardResponse;
-import com.JavaSpringBoot.BESpring.DTO.Response.SinhVienResponse;
-import com.JavaSpringBoot.BESpring.DTO.Response.TopSinhVienResponse;
+import com.JavaSpringBoot.BESpring.DTO.Response.*;
 import com.JavaSpringBoot.BESpring.DTO.Response.page.Meta;
 import com.JavaSpringBoot.BESpring.DTO.Response.page.PageResponse;
 import com.JavaSpringBoot.BESpring.Entity.SinhVienEntity;
@@ -26,7 +23,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -152,6 +151,16 @@ public class SinhVienServiceImpl implements ISinhVienService {
         response.setSinhVienKha(sinhVIenRepository.getSinhVienKha());
         response.setSinhVienTrungBinh(sinhVIenRepository.getSinhVienTrungBinh());
         response.setSinhVienYeu(sinhVIenRepository.getSinhVienYeu());
+        response.setSinhVienTrend(getSVTrend());
         return new ApiResponse<>(true,"Get dashBoard thành công",response);
+    }
+    public List<SinhVienTrendResponse> getSVTrend(){
+        List<Object[]> listSVTrend=sinhVIenRepository.getSinhVienTheoThang();
+        return listSVTrend.stream().map(obj->{
+           SinhVienTrendResponse response=new SinhVienTrendResponse();
+            response.setThang(obj[0] + "-" + obj[1]);
+           response.setSoLuong(((Number)obj[2]).longValue());
+           return response;
+        }).collect(Collectors.toList());
     }
 }

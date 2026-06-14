@@ -13,7 +13,8 @@ public class SinhVienMapper {
                 sv.getTen(),
                 sv.getTuoi(),
                 sv.getDtb(),
-                sv.getAvatar()
+                sv.getAvatar(),
+                sv.getCreatedAt()
         );
     }
 
@@ -24,6 +25,7 @@ public class SinhVienMapper {
         sv.setTuoi(req.getTuoi());
         sv.setDtb(req.getDtb());
         sv.setAvatar(req.getAvatar());
+        sv.setCreatedAt(req.getCreatedAt());
         return sv;
     }
     public static TopSinhVienResponse toTopSinhVienResponse(SinhVienEntity sv){

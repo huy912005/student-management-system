@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Objects;
 
 public interface SinhVIenRepository extends JpaRepository<SinhVienEntity,Integer> {
     Page<SinhVienEntity> findByTenContaining(String ten, Pageable pageable);
@@ -39,4 +40,13 @@ public interface SinhVIenRepository extends JpaRepository<SinhVienEntity,Integer
     """)
     Double getDiemCaoNhat();
     List<SinhVienEntity> findTop5ByOrderByDtbDesc();
+    @Query("""
+        SELECT YEAR(s.createdAt),
+        MONTH(s.createdAt),
+        COUNT(s)
+        FROM SinhVienEntity s
+        GROUP BY YEAR(s.createdAt), MONTH(s.createdAt)
+        ORDER BY YEAR(s.createdAt), MONTH(s.createdAt)
+    """)
+    List<Object[]> getSinhVienTheoThang();
 }
