@@ -1,4 +1,5 @@
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
+import "./HocLucChart.css";
 export const HocLucChart = ({ dashboard }) => {
     const data = [
         {
@@ -27,16 +28,18 @@ export const HocLucChart = ({ dashboard }) => {
     ];
     return(
         <div>
-            <div>
-                <h2>Biểu đồ học lực</h2>
-                <PieChart width={400} height={300}> 
-                    <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>
-                        {data.map((entry, index) =>(
-                            <Cell key={index} fill={COLORS[index]}/>
-                        ))}
-                    </Pie>
-                    <Tooltip/>
-                </PieChart>
+            <div className="hocluc-card">
+                <h2 className="hocluc-title">Biểu đồ học lực</h2>
+                <div className="hocluc-wrapper">
+                    <PieChart width={400} height={300}> 
+                        <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>
+                            {data.map((entry, index) =>(
+                                <Cell key={index} fill={COLORS[index]}/>
+                            ))}
+                        </Pie>
+                        <Tooltip/>
+                    </PieChart>
+                </div>
             </div>
         </div>
     )

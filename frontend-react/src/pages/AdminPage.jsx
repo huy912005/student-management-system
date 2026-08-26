@@ -5,6 +5,8 @@ import AdminLayout from "../layouts/AdminLayout";
 import "./AdminPage.css";
 import { TopSinhVienCard } from "../components/dashboard/TopSinhVienCard";
 import { HocLucChart } from "../components/dashboard/HocLucChart";
+import { SinhVienTrendChart } from "../components/dashboard/SinhVienTrendChart";
+import { RecentSinhVienCard } from "../components/dashboard/RecentSinhVienCard";
 
 export default function AdminPage() {
     const { data, isLoading, error } = useDashboardQuery();
@@ -38,6 +40,8 @@ export default function AdminPage() {
         }
     ] : [];
     const top5SV = dashboard?.topSinhVien || [];
+    const trenData = dashboard?.sinhVienTrend || [];
+    const recentSinhViens = dashboard?.recentSinhVien || [];
     return (
         <AdminLayout>
             <h1>Admin Dashboard</h1>
@@ -54,16 +58,14 @@ export default function AdminPage() {
                     <p>Không có dữ liệu</p>
                 )}
             </div>
-            <div>
-                {isLoading ? (
-                    <p>Đang tải dữ liệu...</p>
-                ) : top5SV.length > 0 ? (
-                    <TopSinhVienCard sinhViens={top5SV}/>
-                ) : (
-                    <p>Không có dữ liệu</p>
-                )}
+            <div className="dashboard-charts">
+                <HocLucChart dashboard={dashboard}/>
+                <SinhVienTrendChart trenData={trenData}/>
             </div>
-            <HocLucChart dashboard={dashboard}/>
+            <div className="dashboard-bottom">
+                <RecentSinhVienCard recentSinhViens={recentSinhViens}/>
+                <TopSinhVienCard sinhViens={top5SV}/>
+            </div>
         </AdminLayout>
     )
 }

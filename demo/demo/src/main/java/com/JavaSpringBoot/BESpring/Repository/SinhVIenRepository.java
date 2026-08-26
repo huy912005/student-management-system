@@ -49,4 +49,5 @@ public interface SinhVIenRepository extends JpaRepository<SinhVienEntity,Integer
         ORDER BY YEAR(s.createdAt), MONTH(s.createdAt)
     """)
     List<Object[]> getSinhVienTheoThang();
+    List<SinhVienEntity> findTop5ByOrderByCreatedAtDesc();
 }

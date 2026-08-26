@@ -10,6 +10,7 @@ export const useSaveSinhVien = (editing,handleCloseModal,setPage) => {
         },
         onSuccess:()=>{
             queryClient.invalidateQueries({queryKey:[`sinhvien`]});//cache cũ rồi nên xóa đi để tự động gọi lại api lấy dữ liệu mới
+            queryClient.invalidateQueries({queryKey:[`dashboard`]});//cập nhật lại số lượng sinh viên trên dashboard
             toast.success(editing ? 'Đã cập nhật thông tin sinh viên.' : 'Đã thêm sinh viên mới.');
             handleCloseModal();
             setPage(0);

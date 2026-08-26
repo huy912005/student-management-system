@@ -1,6 +1,7 @@
 package com.JavaSpringBoot.BESpring.mapper;
 
 import com.JavaSpringBoot.BESpring.DTO.Request.SinhVienRequest;
+import com.JavaSpringBoot.BESpring.DTO.Response.RecentSinhVienResponse;
 import com.JavaSpringBoot.BESpring.DTO.Response.SinhVienResponse;
 import com.JavaSpringBoot.BESpring.DTO.Response.TopSinhVienResponse;
 import com.JavaSpringBoot.BESpring.Entity.SinhVienEntity;
@@ -30,5 +31,11 @@ public class SinhVienMapper {
     }
     public static TopSinhVienResponse toTopSinhVienResponse(SinhVienEntity sv){
         return new TopSinhVienResponse(sv.getTen(),sv.getDtb());
+    }
+    public static RecentSinhVienResponse toRecentSinhVienResponse(SinhVienEntity sv){
+        return RecentSinhVienResponse.builder().
+                ten(sv.getTen()).
+                createdAt(sv.getCreatedAt())
+                .build();
     }
 }

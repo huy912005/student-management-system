@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -80,6 +81,7 @@ public class SinhVienServiceImpl implements ISinhVienService {
         }
 
         SinhVienEntity entity = SinhVienMapper.toEntity(sinhVienRequest);
+        entity.setCreatedAt(LocalDateTime.now());
         SinhVienEntity saved = sinhVIenRepository.save(entity);
         
         // Đã lưu Database thành công, ghi chú lại là tốt đẹp (loại INFO)
@@ -152,6 +154,8 @@ public class SinhVienServiceImpl implements ISinhVienService {
         response.setSinhVienTrungBinh(sinhVIenRepository.getSinhVienTrungBinh());
         response.setSinhVienYeu(sinhVIenRepository.getSinhVienYeu());
         response.setSinhVienTrend(getSVTrend());
+        List<RecentSinhVienResponse> recent = sinhVIenRepository.findTop5ByOrderByCreatedAtDesc().stream().map(SinhVienMapper::toRecentSinhVienResponse).toList();
+        response.setRecentSinhVien(recent);
         return new ApiResponse<>(true,"Get dashBoard thành công",response);
     }
     public List<SinhVienTrendResponse> getSVTrend(){
