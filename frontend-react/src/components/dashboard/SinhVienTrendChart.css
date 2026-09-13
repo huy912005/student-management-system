@@ -1,0 +1,28 @@
+.chart-card{
+    background:#fff;
+    border-radius:24px;
+    padding:24px;
+    margin-top:24px;
+    box-shadow:0 10px 30px rgba(15,23,42,.05);
+    transition:.25s;
+}
+
+.chart-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 40px rgba(15,23,42,.08);
+}
+
+.chart-title{
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:35px;
+    color:#0b4de9d3;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.chart-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}

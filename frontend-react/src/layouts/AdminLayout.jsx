@@ -1,14 +1,25 @@
+import { FaChartPie, FaUserGraduate } from 'react-icons/fa';
 import './AdminLayout.css';
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 export default function AdminLayout({ children }) {
     const username=localStorage.getItem('username');
     return(
         <div className="admin">
             <div className="sidebar">
-                <h2>Admin Sidebar</h2>
+                <h2 className="sidebar-title">Student Admin</h2>
                 <ul>
-                    <li><Link to="/admin">Dashboard</Link></li>
-                    <li><Link to="/admin/sinhvien">Sinh viên</Link></li>
+                    <li>
+                        <NavLink to="/admin" end className={({isActive}) => isActive ? "menu-link active" : "menu-link"}>
+                            <FaChartPie />
+                            <span>Dashboard</span>
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/admin/sinhvien" className={({isActive}) => isActive ? "menu-link active" : "menu-link"}>
+                            <FaUserGraduate />
+                            <span>Sinh viên</span>
+                        </NavLink>
+                    </li>
                 </ul>
             </div>
             <div className="main">

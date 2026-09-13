@@ -11,8 +11,10 @@ export const useLoginMutation=()=>{
             const data = res;
             if(data.success) {
                 toast.success('Đăng nhập thành công');
-                localStorage.setItem('token', data.data.token);
-                localStorage.setItem('username', data.data.username);
+                localStorage.setItem('accessToken', data.data.accessToken);
+                localStorage.setItem('refreshToken', data.data.refreshToken);
+                localStorage.setItem('username', data.data.userName);
+                localStorage.setItem('role', data.data.role);
                 navigate('/admin');
             }
         },

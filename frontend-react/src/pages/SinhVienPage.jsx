@@ -19,6 +19,7 @@ export default function SinhVienPage() {
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [avatar, setAvatar] = useState(null);
+    const [preview, setpreview] = useState(null);
     const sinhVienSchema = z.object({
         ten: z.string().min(2,"Tên không được để trống"),
         tuoi: z.coerce.number().min(1,"Tuổi phải lớn hơn 0"),
@@ -35,6 +36,12 @@ export default function SinhVienPage() {
         },500);
         return ()=>clearTimeout(timer);
     },[keyword]);
+    useEffect(()=>{
+        return () => {
+            if(preview)
+                URL.revokeObjectURL(preview);
+        }
+    },[preview]);
     const {data : queryData, isLoading, isError, error, refetch} = useSinhVienQuery(debounceKeyword, page, size);
     const sinhVienList = queryData?.data?.data || []; 
     const totalCount = queryData?.data?.meta?.total || 0;
@@ -52,9 +59,9 @@ export default function SinhVienPage() {
         setPage(0); 
     }
     const deleteMutation = useDeleteSinhVien(setPage);
-    const handleDelete = async (id) => {
+    const handleDelete = async (id, ten) => {
         const result = await Swal.fire({
-            title: 'Bạn có chắc chắn?',
+            title: `Bạn có chắc chắn xóa "${ten}"?`,
             text: "Bạn sẽ không thể hoàn tác hành động này!",
             icon: 'warning',
             showCancelButton: true,
@@ -71,6 +78,8 @@ export default function SinhVienPage() {
         setOpen(false);
         reset();
         setEditing(null);
+        setAvatar(null);
+        setpreview(null);
     };
     const saveMutation = useSaveSinhVien(editing, handleCloseModal, setPage);
     const onSubmit = async (data) => {
@@ -85,87 +94,109 @@ export default function SinhVienPage() {
     if(isError){
        return <p>Có lỗi xảy ra</p>
     }
+
+    const role = localStorage.getItem("role");
+    const isAdmin = role === "admin";
+
+    const handleAvatarChange = (e) => {
+        const file =e.target.files[0];
+        setAvatar(file);
+        if(file)
+            setpreview(URL.createObjectURL(file));
+    }
+
     return (
         <AdminLayout>
-            <h2>Quản lý sinh viên</h2>
-            <div style={{ marginBottom: "20px" }}>
-                <input placeholder="Tìm tên sinh viên..." value={keyword} onChange={handleSearch} style={{ padding: "8px", width: "200px" }}/>
-                <button className="btnThemSV" onClick={()=>{setEditing(null); reset({ ten: '', tuoi: '', dtb: '' }); setOpen(true);}}>Thêm sinh viên</button>
-            </div>
-            <table border="1" cellPadding="10">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Tên</th>
-                    <th>Tuổi</th>
-                    <th>DTB</th>
-                    <th>Thực thi</th>
-                </tr>
-                </thead>
-                <tbody>
-                    {isLoading ? (
-                                <>
-                                    <SkeletonRow />
-                                    <SkeletonRow />
-                                    <SkeletonRow />
-                                </>
-                        ) : sinhVienList.length > 0 ? (
-                            sinhVienList.map((sinhVien) => (
-                                <tr key={sinhVien.id}>
-                                    <td>{sinhVien.id}</td>
-                                    <td>{sinhVien.ten}</td>
-                                    <td>{sinhVien.tuoi}</td>
-                                    <td>{sinhVien.dtb}</td>
-                                    <td>
-                                        <button onClick={()=>{setEditing(sinhVien); reset({ten: sinhVien.ten,tuoi: sinhVien.tuoi,dtb: sinhVien.dtb}); setOpen(true);}}>
-                                            <FaEdit style={{ color: 'blue', fontSize: '18px' }} />
-                                        </button>
-                                        <button onClick={() => handleDelete(sinhVien.id)} disabled={deleteMutation.isPending}>
-                                            <FaTrash style={{ color: 'red', fontSize: '18px' }} />
-                                        </button>   
-                                    </td>
-                                </tr>
-                            ))
-                        ) : 
-                        (<tr><td colSpan="4" style={{ textAlign: "center" }}>Không có dữ liệu</td></tr>)
-                    }
-                </tbody>
-            </table>
-            <div style={{ marginTop: "20px" }}>
-                <button onClick={handlePrevPage} disabled={page === 0}>
-                    Trang trước
-                </button>
-                <span style={{ margin: "0 15px" }}>
-                    Trang {page + 1} / {totalPages}
-                </span>
-                <button onClick={handleNextPage} disabled={page + 1 >= totalPages || totalPages === 0}>
-                    Trang sau
-                </button>
-            </div>
-            {
-                open &&(
-                    <div className="modal">
-                        <div className="modal-content">
-                            <h2>{editing ? "Sửa sinh viên" : "Thêm sinh viên"}</h2>
-                            <form onSubmit={handleSubmit(onSubmit)}>
-                                {/* <input placeholder="Tên" value={form.ten} onChange={(e) => setForm({ ...form, ten: e.target.value })} required/> */}
-                                <input placeholder="Tên" {...register('ten')} />
-                                {errors.ten &&(<p>{errors.ten.message}</p>)}
-                                {/* <input type="number" placeholder="Tuổi" {...register('tuoi',{required:"Tuổi không được trống!",min:{value:1,message:"Tuổi phải lớn hơn 0!"}})}/> */}
-                                <input type="number" placeholder="Tuổi" {...register('tuoi')}/>
-                                {errors.tuoi &&(<p>{errors.tuoi.message}</p>)}
-                                <input type="number" placeholder="Điểm trung bình" {...register('dtb')}/>
-                                {errors.dtb &&(<p>{errors.dtb.message}</p>)}
-                                <input type="file" accept="image/*" onChange={(e)=>{console.log(e.target.files[0]);setAvatar(e.target.files[0]);}}/>
-                                <div style={{ display: 'flex', gap: '10px' }}>
-                                    <button type="submit">{editing ? "Chỉnh sửa" : "Thêm"}</button>
-                                    <button type="button" onClick={handleCloseModal}>Hủy</button>
-                                </div>
-                            </form>
+            <div className="student-page-card">
+                <div className="student-header">
+                    <h2>Quản lý sinh viên</h2>
+                    <button className="btnThemSV" onClick={()=>{setEditing(null); reset({ ten: '', tuoi: '', dtb: '' }); setOpen(true);}}>Thêm sinh viên</button>
+                </div>
+                <div className="search-box">
+                    <input placeholder="🔍 Tìm tên sinh viên..." value={keyword} onChange={handleSearch} style={{ padding: "8px", width: "200px" }}/>       
+                </div>
+                <table className="student-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Hình ảnh</th>
+                            <th>Tên</th>
+                            <th>Tuổi</th>
+                            <th>DTB</th>
+                            <th>Thực thi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {isLoading ? (
+                                    <>
+                                        <SkeletonRow />
+                                        <SkeletonRow />
+                                        <SkeletonRow />
+                                    </>
+                            ) : sinhVienList.length > 0 ? (
+                                sinhVienList.map((sinhVien) => (
+                                    <tr key={sinhVien.id}>
+                                        <td>{sinhVien.id}</td>
+                                        <td>{sinhVien.avatar && <img src={`${import.meta.env.VITE_API_URL}/uploads/${sinhVien.avatar}`} alt = "avatar" className="avatar"/>}</td>
+                                        <td>{sinhVien.ten}</td>
+                                        <td>{sinhVien.tuoi}</td>
+                                        <td>{sinhVien.dtb}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <button className="action-btn edit-btn" onClick={()=>{setEditing(sinhVien); reset({ten: sinhVien.ten,tuoi: sinhVien.tuoi,dtb: sinhVien.dtb}); setOpen(true);}}>
+                                                <FaEdit style={{ color: 'blue', fontSize: '18px' }} />
+                                            </button>
+                                            {isAdmin && (
+                                                <button className="action-btn delete-btn" onClick={() => handleDelete(sinhVien.id,sinhVien.ten)} disabled={deleteMutation.isPending }>
+                                                    <FaTrash style={{ color: 'red', fontSize: '18px' }}/>
+                                                </button> 
+                                            )}  
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : 
+                            (<tr><td colSpan="4" style={{ textAlign: "center" }}>Không có dữ liệu</td></tr>)
+                        }
+                    </tbody>
+                </table>
+                <div className="pagination">
+                    <button onClick={handlePrevPage} disabled={page === 0}>
+                        Trang trước
+                    </button>
+                    <span style={{ margin: "0 15px" }}>
+                        Trang {page + 1} / {totalPages}
+                    </span>
+                    <button onClick={handleNextPage} disabled={page + 1 >= totalPages || totalPages === 0}>
+                        Trang sau
+                    </button>
+                </div>
+                {
+                    open &&(
+                        <div className="modal">
+                            <div className="modal-content">
+                                <h2>{editing ? "Sửa sinh viên" : "Thêm sinh viên"}</h2>
+                                <form onSubmit={handleSubmit(onSubmit)}>
+                                    {/* <input placeholder="Tên" value={form.ten} onChange={(e) => setForm({ ...form, ten: e.target.value })} required/> */}
+                                    <input placeholder="Tên" {...register('ten')} />
+                                    {errors.ten &&(<p>{errors.ten.message}</p>)}
+                                    {/* <input type="number" placeholder="Tuổi" {...register('tuoi',{required:"Tuổi không được trống!",min:{value:1,message:"Tuổi phải lớn hơn 0!"}})}/> */}
+                                    <input type="number" placeholder="Tuổi" {...register('tuoi')}/>
+                                    {errors.tuoi &&(<p>{errors.tuoi.message}</p>)}
+                                    <input type="number" placeholder="Điểm trung bình" {...register('dtb')}/>
+                                    {errors.dtb &&(<p>{errors.dtb.message}</p>)}
+                                    <input type="file" accept="image/*" onChange={handleAvatarChange}/>
+                                    {preview ? <img src={preview} alt="preview" className="avatar-preview"/> 
+                                            :editing?.avatar ? <img src={`${import.meta.env.VITE_API_URL}/uploads/${editing.avatar}`} className="avatar-preview"/>
+                                                            : null}
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <button type="submit" disabled={saveMutation.isPending}>{saveMutation.isPending?"Đang lưu ..." : editing ? "Chỉnh sửa" : "Thêm"}</button>
+                                        <button type="button" onClick={handleCloseModal}>Hủy</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                )
-            }
+                    )
+                }
+            </div>
         </AdminLayout>
     );
 }

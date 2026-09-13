@@ -1,0 +1,28 @@
+.hocluc-card{
+    background:#ffffff;
+    border-radius:24px;
+    padding:24px;
+    margin-top:24px;
+    box-shadow:0 10px 30px rgba(15,23,42,.05);
+    transition:.25s;
+}
+
+.hocluc-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 40px rgba(15,23,42,.08);
+}
+
+.hocluc-title{
+    font-size:24px;
+    font-weight:700;
+    color:#ec0f0f;
+    margin-bottom:20px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.hocluc-wrapper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}

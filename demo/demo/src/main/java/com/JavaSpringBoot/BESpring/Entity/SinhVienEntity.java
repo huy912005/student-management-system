@@ -1,9 +1,19 @@
 package com.JavaSpringBoot.BESpring.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="sinhvien")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Data
 public class SinhVienEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,40 +22,5 @@ public class SinhVienEntity {
     private int tuoi;
     private double dtb;
     private String avatar;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTen() {
-        return ten;
-    }
-
-    public void setTen(String ten) {
-        this.ten = ten;
-    }
-
-    public int getTuoi() {
-        return tuoi;
-    }
-
-    public void setTuoi(int tuoi) {
-        this.tuoi = tuoi;
-    }
-
-    public double getDtb() {
-        return dtb;
-    }
-
-    public void setDtb(double dtb) {
-        this.dtb = dtb;
-    }
-
-    public String getAvatar() {return avatar;}
-
-    public void setAvatar(String avatar) {this.avatar = avatar;}
+    private LocalDateTime createdAt;
 }

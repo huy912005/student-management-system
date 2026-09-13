@@ -1,5 +1,6 @@
 package com.JavaSpringBoot.BESpring.Controller;
 
+import com.JavaSpringBoot.BESpring.DTO.Request.RefreshTokenRequest;
 import com.JavaSpringBoot.BESpring.DTO.Request.UserLoginRequest;
 import com.JavaSpringBoot.BESpring.Entity.UserEnitity;
 import com.JavaSpringBoot.BESpring.Security.TokenBlackList;
@@ -10,6 +11,8 @@ import com.JavaSpringBoot.BESpring.DTO.Response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,8 +28,9 @@ public class UserController {
                 request.getUsername(),
                 request.getPassword()
         );
-        String token = JwtUtil.generateToken(user.getUsername(),user.getRole());
-        return new ApiResponse<>(true, "Login success",UserMapper.toLoginResponse(user, token));
+        String accessToen = JwtUtil.generateAccessToken(user.getUsername(),user.getRole());
+        String refeshToken = JwtUtil.generateRefreshToken(user.getUsername());
+        return new ApiResponse<>(true, "Login success",UserMapper.toLoginResponse(user, accessToen, refeshToken));
     }
 
     @GetMapping
@@ -48,5 +52,10 @@ public class UserController {
             TokenBlackList.add(token);
         }
         return new ApiResponse<>(true, "Logout Success",null);
+    }
+
+    @PostMapping("/auth/refresh")
+    public ApiResponse<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request){
+        return userService.refreshToken(request.getRefreshToken());
     }
 }

@@ -8,6 +8,7 @@ export const useDeleteSinhVien = (setPage) => {
             mutationFn:(id)=>deleteSinhVien(id),
             onSuccess:()=>{
                 queryClient.invalidateQueries({queryKey:[`sinhvien`]});// xóa cache để tự động refetch
+                queryClient.invalidateQueries({queryKey:[`dashboard`]});//cập nhật lại số lượng sinh viên trên dashboard
                 toast.success('Xóa sinh viên thành công');
                 setPage(0);
             },

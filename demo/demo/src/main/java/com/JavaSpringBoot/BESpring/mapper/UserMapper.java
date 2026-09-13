@@ -1,5 +1,6 @@
 package com.JavaSpringBoot.BESpring.mapper;
 
+import com.JavaSpringBoot.BESpring.DTO.Response.LoginResponse;
 import com.JavaSpringBoot.BESpring.DTO.Response.UserResponse;
 import com.JavaSpringBoot.BESpring.Entity.UserEnitity;
 
@@ -13,7 +14,7 @@ public class UserMapper {
         return res;
     }
 
-    public static UserResponse toLoginResponse(UserEnitity user, String token){
-        return new UserResponse(user.getUsername(), user.getRole(), token);
+    public static LoginResponse toLoginResponse(UserEnitity user, String accessToken, String refeshToken){
+        return new LoginResponse(user.getUsername(), user.getRole(), accessToken,refeshToken);
     }
 }

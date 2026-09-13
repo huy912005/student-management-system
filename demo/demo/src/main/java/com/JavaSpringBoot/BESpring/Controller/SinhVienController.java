@@ -8,6 +8,8 @@ import com.JavaSpringBoot.BESpring.DTO.Response.ApiResponse;
 import com.JavaSpringBoot.BESpring.Service.impl.ImageUploadServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,5 +47,9 @@ public class SinhVienController {
     @PostMapping("/uploads")
     public ApiResponse<?> upload(@RequestParam("file") MultipartFile file){
         return new ApiResponse<>(true,"upload success",imageUploadService.uploadImage(file));
+    }
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> getDashboard(){
+        return ResponseEntity.status(HttpStatus.OK).body(sinhVienService.dashBoard());
     }
 }
